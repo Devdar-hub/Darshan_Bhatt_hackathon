@@ -171,8 +171,8 @@ Sophiie senior engineers and CTO. Judging will take place over a 2-week period f
 |-------|-------------|
 | **Project Name** | AI MARKET ANALYST |
 | **One-Line Description** | This project is an AI-powered market analysis assistant that runs as a website and WhatsApp bot. Users can simply send a stock symbol (like TSLA or AAPL) on WhatsApp, and the system fetches real-time market data, recent company news, and financial context. An AI agent then analyzes this information and generates a clear buy/sell/hold signal, confidence score, risk level, and short-term outlook. The result is sent back instantly as a structured message on WhatsApp. |
-| **Demo Video Link** | https://youtu.be/X-K02kULAgA |
-| **Tech Stack** | python javascript |
+| **Demo Video Link** | https://youtu.be/-HuhlZteKcQ |
+| **Tech Stack** | python typescript nextJS |
 | **AI Provider(s) Used** | GEMINI (Because i dont have any premium subscription)|
 
 ### About Your Project
