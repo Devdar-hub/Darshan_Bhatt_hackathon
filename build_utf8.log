@@ -1,0 +1,400 @@
+﻿
+> ai-market-analyst@0.1.0 build
+> next build
+
+  Γû▓ Next.js 14.2.35
+
+   Creating an optimized production build ...
+npm : Failed to 
+compile.
+At line:1 char:1
++ npm run build > 
+build.log 2>&1
++ ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: (Failed    
+ to compile.:Stri    
+ng) [], RemoteEx    
+ception
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+
+./src/app/globals.css
+.webpack[javascript/a
+uto]!=!./node_modules
+/next/dist/build/webp
+ack/loaders/css-loade
+r/src/index.js??ruleS
+et[1].rules[14].oneOf
+[12].use[2]!./node_mo
+dules/next/dist/build
+/webpack/loaders/post
+css-loader/src/index.
+js??ruleSet[1].rules[
+14].oneOf[12].use[3]!
+./src/app/globals.css
+Error: It looks like 
+you're trying to use 
+`tailwindcss` 
+directly as a 
+PostCSS plugin. The 
+PostCSS plugin has 
+moved to a separate 
+package, so to 
+continue using 
+Tailwind CSS with 
+PostCSS you'll need 
+to install `@tailwind
+css/postcss` and 
+update your PostCSS 
+configuration.
+    at lt 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\tailwind
+css\dist\lib.js:38:16
+43)
+    at 
+LazyResult.runOnRoot 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\nod
+e_modules\postcss\lib
+\lazy-result.js:329:1
+6)
+    at 
+LazyResult.runAsync 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\nod
+e_modules\postcss\lib
+\lazy-result.js:258:2
+6)
+    at 
+LazyResult.async 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\nod
+e_modules\postcss\lib
+\lazy-result.js:160:3
+0)
+    at 
+LazyResult.then 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\nod
+e_modules\postcss\lib
+\lazy-result.js:404:1
+7)
+
+Import trace for 
+requested module:
+./src/app/globals.css
+.webpack[javascript/a
+uto]!=!./node_modules
+/next/dist/build/webp
+ack/loaders/css-loade
+r/src/index.js??ruleS
+et[1].rules[14].oneOf
+[12].use[2]!./node_mo
+dules/next/dist/build
+/webpack/loaders/post
+css-loader/src/index.
+js??ruleSet[1].rules[
+14].oneOf[12].use[3]!
+./src/app/globals.css
+./src/app/globals.css
+
+./src/app/globals.css
+Error: It looks like 
+you're trying to use 
+`tailwindcss` 
+directly as a 
+PostCSS plugin. The 
+PostCSS plugin has 
+moved to a separate 
+package, so to 
+continue using 
+Tailwind CSS with 
+PostCSS you'll need 
+to install `@tailwind
+css/postcss` and 
+update your PostCSS 
+configuration.
+    at lt 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\tailwind
+css\dist\lib.js:38:16
+43)
+    at 
+LazyResult.runOnRoot 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\nod
+e_modules\postcss\lib
+\lazy-result.js:329:1
+6)
+    at 
+LazyResult.runAsync 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\nod
+e_modules\postcss\lib
+\lazy-result.js:258:2
+6)
+    at 
+LazyResult.async 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\nod
+e_modules\postcss\lib
+\lazy-result.js:160:3
+0)
+    at 
+LazyResult.then 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\nod
+e_modules\postcss\lib
+\lazy-result.js:404:1
+7)
+    at 
+tryRunOrWebpackError 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\dis
+t\compiled\webpack\bu
+ndle5.js:28:312989)
+    at __webpack_requ
+ire_module__ 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\dis
+t\compiled\webpack\bu
+ndle5.js:28:131165)
+    at __nested_webpa
+ck_require_153728__ 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\dis
+t\compiled\webpack\bu
+ndle5.js:28:130607)
+    at 
+F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\dis
+t\compiled\webpack\bu
+ndle5.js:28:131454
+    at 
+symbolIterator 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\dis
+t\compiled\neo-async\
+async.js:1:14444)
+    at done 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\dis
+t\compiled\neo-async\
+async.js:1:14824)
+    at Hook.eval [as 
+callAsync] (eval at 
+create 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\dis
+t\compiled\webpack\bu
+ndle5.js:13:28858), 
+<anonymous>:15:1)
+    at Hook.CALL_ASYN
+C_DELEGATE [as 
+_callAsync] 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\dis
+t\compiled\webpack\bu
+ndle5.js:13:26012)
+    at 
+F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\dis
+t\compiled\webpack\bu
+ndle5.js:28:130328
+    at 
+symbolIterator 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\dis
+t\compiled\neo-async\
+async.js:1:14402)
+-- inner error --
+Error: It looks like 
+you're trying to use 
+`tailwindcss` 
+directly as a 
+PostCSS plugin. The 
+PostCSS plugin has 
+moved to a separate 
+package, so to 
+continue using 
+Tailwind CSS with 
+PostCSS you'll need 
+to install `@tailwind
+css/postcss` and 
+update your PostCSS 
+configuration.
+    at lt 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\tailwind
+css\dist\lib.js:38:16
+43)
+    at 
+LazyResult.runOnRoot 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\nod
+e_modules\postcss\lib
+\lazy-result.js:329:1
+6)
+    at 
+LazyResult.runAsync 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\nod
+e_modules\postcss\lib
+\lazy-result.js:258:2
+6)
+    at 
+LazyResult.async 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\nod
+e_modules\postcss\lib
+\lazy-result.js:160:3
+0)
+    at 
+LazyResult.then 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\nod
+e_modules\postcss\lib
+\lazy-result.js:404:1
+7)
+    at 
+Object.<anonymous> 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\dis
+t\build\webpack\loade
+rs\css-loader\src\ind
+ex.js??ruleSet[1].rul
+es[14].oneOf[12].use[
+2]!F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\dis
+t\build\webpack\loade
+rs\postcss-loader\src
+\index.js??ruleSet[1]
+.rules[14].oneOf[12].
+use[3]!F:\Projects\AI
+ Market Analyst Agent
+\src\app\globals.css:
+1:7)
+    at 
+F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\dis
+t\compiled\webpack\bu
+ndle5.js:28:922493
+    at Hook.eval [as 
+call] (eval at 
+create 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\dis
+t\compiled\webpack\bu
+ndle5.js:13:28636), 
+<anonymous>:7:1)
+    at 
+Hook.CALL_DELEGATE 
+[as _call] 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\dis
+t\compiled\webpack\bu
+ndle5.js:13:25906)
+    at 
+F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\dis
+t\compiled\webpack\bu
+ndle5.js:28:131198
+    at 
+tryRunOrWebpackError 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\dis
+t\compiled\webpack\bu
+ndle5.js:28:312943)
+    at __webpack_requ
+ire_module__ 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\dis
+t\compiled\webpack\bu
+ndle5.js:28:131165)
+    at __nested_webpa
+ck_require_153728__ 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\dis
+t\compiled\webpack\bu
+ndle5.js:28:130607)
+    at 
+F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\dis
+t\compiled\webpack\bu
+ndle5.js:28:131454
+    at 
+symbolIterator 
+(F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\dis
+t\compiled\neo-async\
+async.js:1:14444)
+
+Generated code for 
+F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\dis
+t\build\webpack\loade
+rs\css-loader\src\ind
+ex.js??ruleSet[1].rul
+es[14].oneOf[12].use[
+2]!F:\Projects\AI 
+Market Analyst Agent\
+node_modules\next\dis
+t\build\webpack\loade
+rs\postcss-loader\src
+\index.js??ruleSet[1]
+.rules[14].oneOf[12].
+use[3]!F:\Projects\AI
+ Market Analyst Agent
+\src\app\globals.css
+
+Import trace for 
+requested module:
+./src/app/globals.css
+
+
+> Build failed 
+because of webpack 
+errors
