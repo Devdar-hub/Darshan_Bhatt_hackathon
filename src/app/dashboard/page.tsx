@@ -12,10 +12,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StockData, TechnicalIndicators } from "@/lib/stock";
 import { NewsItem } from "@/lib/news";
 import { AIAnalysis } from "@/lib/ai";
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "@/components/ui/command";
 
 export default function DashboardPage() {
     const [symbol, setSymbol] = useState("AAPL");
     const [query, setQuery] = useState("");
+    const [contextResults, setContextResults] = useState<any[]>([]); // New state for search results
     const [stockData, setStockData] = useState<StockData | null>(null);
     const [news, setNews] = useState<NewsItem[]>([]);
     const [analysis, setAnalysis] = useState<AIAnalysis | null>(null);
@@ -102,17 +111,48 @@ export default function DashboardPage() {
                     </p>
                 </div>
 
-                <form onSubmit={handleSearch} className="flex gap-2 w-full md:w-auto">
-                    <Input
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        placeholder="Search symbol..."
-                        className="w-full md:w-64"
-                    />
-                    <Button type="submit">
-                        <Search className="h-4 w-4" />
-                    </Button>
-                </form>
+                <div className="relative z-50 w-full md:w-72">
+                    <Command className="rounded-lg border shadow-md bg-background">
+                        <CommandInput
+                            placeholder="Search symbol..."
+                            value={query}
+                            onValueChange={(val) => {
+                                setQuery(val);
+                                // Simple debounce or direct fetch could work given internal API
+                                if (val.length > 1) {
+                                    fetch(`/api/search?q=${val}`)
+                                        .then(res => res.json())
+                                        .then(data => setContextResults(data.results || []));
+                                } else {
+                                    setContextResults([]);
+                                }
+                            }}
+                        />
+                        {query.length > 0 && (
+                            <CommandList className={contextResults.length > 0 ? "max-h-[300px]" : "hidden"}>
+                                <CommandEmpty>No results found.</CommandEmpty>
+                                <CommandGroup heading="Suggestions">
+                                    {contextResults.map((result: any) => (
+                                        <CommandItem
+                                            key={result.symbol}
+                                            onSelect={() => {
+                                                setSymbol(result.symbol);
+                                                setQuery(""); // Clear query or keep it? usually clear or set to symbol
+                                                setContextResults([]);
+                                                fetchData(result.symbol);
+                                            }}
+                                        >
+                                            <div className="flex flex-col">
+                                                <span className="font-bold">{result.symbol}</span>
+                                                <span className="text-xs text-muted-foreground">{result.description}</span>
+                                            </div>
+                                        </CommandItem>
+                                    ))}
+                                </CommandGroup>
+                            </CommandList>
+                        )}
+                    </Command>
+                </div>
                 <Button
                     variant="outline"
                     onClick={() => fetch('/api/whatsapp-status')}

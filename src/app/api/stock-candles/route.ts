@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getStockCandles } from '@/lib/stock';
+import '@/lib/whatsapp'; // Force WhatsApp client initialization on dashboard load
 
 export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;

@@ -1,6 +1,6 @@
 import { Client, LocalAuth, Message } from 'whatsapp-web.js';
 import qrcode from 'qrcode-terminal';
-import { getStockQuote } from './stock';
+import { getStockQuote, searchSymbols } from './stock';
 import { getCompanyNews } from './news';
 import { analyzeStock } from './ai';
 
@@ -15,8 +15,92 @@ let client = globalForWhatsApp.whatsappClient || null;
 let isInitializing = globalForWhatsApp.whatsappInitializing || false;
 let isReady = globalForWhatsApp.whatsappReady || false;
 
+// Helper to attach listeners (safe to call multiple times if we clear first)
+const attachListeners = (c: Client) => {
+    c.removeAllListeners('qr');
+    c.removeAllListeners('ready');
+    c.removeAllListeners('authenticated');
+    c.removeAllListeners('auth_failure');
+    c.removeAllListeners('disconnected');
+    c.removeAllListeners('message_create');
+
+    c.on('qr', (qr) => {
+        console.log('QR RECEIVED', qr);
+        qrcode.generate(qr, { small: true });
+        console.log('Please scan the QR code above to log in to WhatsApp');
+    });
+
+    c.on('ready', () => {
+        console.log('WhatsApp Client is ready!');
+        isReady = true;
+        globalForWhatsApp.whatsappReady = true;
+        isInitializing = false;
+        globalForWhatsApp.whatsappInitializing = false;
+    });
+
+    c.on('authenticated', () => {
+        console.log('WhatsApp Client Authenticated');
+    });
+
+    c.on('auth_failure', (msg) => {
+        console.error('WhatsApp Authentication Failed', msg);
+        isInitializing = false;
+        globalForWhatsApp.whatsappInitializing = false;
+    });
+
+    c.on('disconnected', (reason) => {
+        console.log('WhatsApp Client Disconnected', reason);
+        isReady = false;
+        globalForWhatsApp.whatsappReady = false;
+        client = null;
+        globalForWhatsApp.whatsappClient = undefined;
+        isInitializing = false;
+        globalForWhatsApp.whatsappInitializing = false;
+    });
+
+    // Message Handler
+    // 'message_create' triggers for ALL messages, including those sent by the bot (self).
+    c.on('message_create', async (msg) => {
+        // Prevent bot from replying to its own AI responses (infinite loops)
+        if (msg.fromMe && msg.body.startsWith('*AI Analysis')) return;
+        if (msg.fromMe && msg.body.startsWith('Analyzing')) return;
+        if (msg.fromMe && msg.body.startsWith('Sorry,')) return;
+        if (msg.fromMe && msg.body.startsWith('Share not listed')) return;
+        if (msg.fromMe && msg.body.startsWith('Please send')) return;
+        if (msg.fromMe && msg.body.startsWith('Found')) return;
+
+        const text = msg.body.trim();
+        console.log(`DEBUG: Message Received! Body: "${text}", From: ${msg.from}, FromMe: ${msg.fromMe}`);
+
+        // Handle "Analyze [Symbol]" or just "[Symbol]"
+        let symbolCandidate = "";
+        if (text.toLowerCase().startsWith('analyze ')) {
+            symbolCandidate = text.split(' ')[1];
+        } else if (/^[a-zA-Z0-9.]+$/.test(text) && text.length <= 8) {
+            symbolCandidate = text;
+        } else {
+            // Random message that doesn't look like a symbol
+            // Only reply if it's not a system message or media
+            if (msg.type === 'chat' && text.length > 0) {
+                msg.reply("Please send a valid stock symbol (e.g., AAPL, TSLA) or 'Analyze [Symbol]'.");
+            }
+            return;
+        }
+
+        if (symbolCandidate) {
+            await handleStockAnalysisRequest(msg, symbolCandidate.toUpperCase());
+        }
+    });
+};
+
 export async function initializeWhatsApp() {
-    if (client || isInitializing) return;
+    if (client) {
+        // Client already exists (HMR), re-attach listeners to apply latest code changes
+        console.log("Refining WhatsApp listeners on existing client...");
+        attachListeners(client);
+        return;
+    }
+    if (isInitializing) return;
 
     isInitializing = true;
     globalForWhatsApp.whatsappInitializing = true;
@@ -31,54 +115,7 @@ export async function initializeWhatsApp() {
     });
 
     globalForWhatsApp.whatsappClient = client;
-
-    client.on('qr', (qr) => {
-        console.log('QR RECEIVED', qr);
-        qrcode.generate(qr, { small: true });
-        console.log('Please scan the QR code above to log in to WhatsApp');
-    });
-
-    client.on('ready', () => {
-        console.log('WhatsApp Client is ready!');
-        isReady = true;
-        globalForWhatsApp.whatsappReady = true;
-        isInitializing = false;
-        globalForWhatsApp.whatsappInitializing = false;
-    });
-
-    client.on('authenticated', () => {
-        console.log('WhatsApp Client Authenticated');
-    });
-
-    client.on('auth_failure', (msg) => {
-        console.error('WhatsApp Authentication Failed', msg);
-        isInitializing = false;
-        globalForWhatsApp.whatsappInitializing = false;
-    });
-
-    client.on('disconnected', (reason) => {
-        console.log('WhatsApp Client Disconnected', reason);
-        isReady = false;
-        globalForWhatsApp.whatsappReady = false;
-        // Do not nullify client immediately to avoid re-init loops in some cases, or do:
-        client = null;
-        globalForWhatsApp.whatsappClient = undefined;
-        isInitializing = false;
-        globalForWhatsApp.whatsappInitializing = false;
-    });
-
-    // Message Handler
-    client.on('message', async (msg) => {
-        const text = msg.body.trim();
-        // Simple heuristic: If it's a short alphanumeric string (likely a symbol) or starts with "Analyze"
-        if (text.length > 0 && text.length <= 5 && /^[a-zA-Z]+$/.test(text) || text.toLowerCase().startsWith('analyze ')) {
-            const symbol = text.toLowerCase().startsWith('analyze ')
-                ? text.split(' ')[1].toUpperCase()
-                : text.toUpperCase();
-
-            await handleStockAnalysisRequest(msg, symbol);
-        }
-    });
+    attachListeners(client);
 
     try {
         await client.initialize();
@@ -91,21 +128,38 @@ export async function initializeWhatsApp() {
 
 async function handleStockAnalysisRequest(msg: Message, symbol: string) {
     try {
-        msg.reply(`Analyzing ${symbol}... (This may take a few seconds)`);
+        // Validate symbol
+        const searchResults = await searchSymbols(symbol);
+        const exactMatch = searchResults.find((s: any) => s.symbol === symbol);
+
+        let targetSymbol = symbol;
+
+        if (!exactMatch) {
+            if (searchResults.length > 0) {
+                // Found similarities, check if close or top result is good
+                targetSymbol = searchResults[0].symbol;
+                msg.reply(`Found ${targetSymbol} (${searchResults[0].description}). Analyzing...`);
+            } else {
+                msg.reply(`Share not listed or invalid symbol: ${symbol}. Try sending a symbol like 'AAPL' or 'GOOGL'.`);
+                return;
+            }
+        } else {
+            msg.reply(`Analyzing ${targetSymbol}... (This may take a few seconds)`);
+        }
 
         const [stockData, news] = await Promise.all([
-            getStockQuote(symbol),
-            getCompanyNews(symbol)
+            getStockQuote(targetSymbol),
+            getCompanyNews(targetSymbol)
         ]);
 
-        if (!stockData) {
-            msg.reply(`Sorry, I couldn't find data for stock symbol: ${symbol}`);
+        if (!stockData || stockData.price === 0) {
+            msg.reply(`Share not listed or data unavailable for: ${targetSymbol}`);
             return;
         }
 
-        const analysis = await analyzeStock(symbol, stockData, news);
+        const analysis = await analyzeStock(targetSymbol, stockData, news);
 
-        const response = `*AI Analysis for ${symbol}*\n\n` +
+        const response = `*AI Analysis for ${targetSymbol}*\n\n` +
             `*Signal:* ${analysis.signal} (Confidence: ${analysis.confidence}%)\n` +
             `*Risk Level:* ${analysis.riskLevel}\n\n` +
             `*Reasoning:*\n${analysis.reasoning.map(r => `• ${r}`).join('\n')}\n\n` +
@@ -122,9 +176,6 @@ async function handleStockAnalysisRequest(msg: Message, symbol: string) {
 export async function sendWhatsAppMessage(number: string, message: string) {
     if (!client) {
         await initializeWhatsApp();
-        // Wait a bit for initialization, but ideally we should have a better mechanism
-        // For MVP, we might just fail if not ready immediately after init start
-        // or check status.
         if (!client) throw new Error('WhatsApp client not initialized');
     }
 
@@ -147,5 +198,6 @@ export async function sendWhatsAppMessage(number: string, message: string) {
 
 // Start initialization conditionally
 if (!client && !isInitializing) {
-    // initializeWhatsApp(); 
+    console.log("Auto-initializing WhatsApp Client...");
+    initializeWhatsApp();
 }

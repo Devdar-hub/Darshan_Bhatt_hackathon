@@ -18,7 +18,16 @@ export async function analyzeStock(symbol: string, stockData: any, news: any[]):
     Analyze the following data for stock: ${symbol}
 
     Stock Data:
-    ${JSON.stringify(stockData, null, 2)}
+    Price: ${stockData.price}
+    Change: ${stockData.change} (${stockData.changePercent}%)
+    High: ${stockData.high}
+    Low: ${stockData.low}
+    Open: ${stockData.open}
+    Prev Close: ${stockData.prevClose}
+
+    Technical Indicators (Real-time calculated):
+    RSI (14-day): ${stockData.rsi ? stockData.rsi.toFixed(2) : 'N/A'}
+    MACD (12, 26, 9): ${stockData.macd ? `MACD: ${stockData.macd.macd.toFixed(2)}, Signal: ${stockData.macd.signal.toFixed(2)}, Histogram: ${stockData.macd.histogram.toFixed(2)}` : 'N/A'}
 
     Recent News Headlines:
     ${news.slice(0, 5).map((n: any) => `- ${n.headline} (${n.source})`).join('\n')}
